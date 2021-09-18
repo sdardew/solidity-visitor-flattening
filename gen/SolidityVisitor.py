@@ -11,12 +11,15 @@ class SolidityVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by SolidityParser#sourceUnit.
     def visitSourceUnit(self, ctx:SolidityParser.SourceUnitContext):
+        text = self.visitPragmaDirective(ctx.getChild(0))
+        print(text)
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by SolidityParser#pragmaDirective.
     def visitPragmaDirective(self, ctx:SolidityParser.PragmaDirectiveContext):
-        return self.visitChildren(ctx)
+        return 'pragma ' + ctx.getChild(1).getText() + ' ;'
+        # return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by SolidityParser#VersionPragma.
@@ -366,7 +369,8 @@ class SolidityVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by SolidityParser#identifier.
     def visitIdentifier(self, ctx:SolidityParser.IdentifierContext):
-        return self.visitChildren(ctx)
+        return ctx.getText()
+        # return self.visitChildren(ctx)
 
 
 
