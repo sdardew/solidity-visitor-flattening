@@ -1,4 +1,0 @@
-# ignore .idea directory
-.idea/
-
-gen/__pycache__/

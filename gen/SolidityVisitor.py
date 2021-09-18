@@ -18,29 +18,35 @@ class SolidityVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by SolidityParser#pragmaDirective.
     def visitPragmaDirective(self, ctx:SolidityParser.PragmaDirectiveContext):
-        return 'pragma ' + ctx.getChild(1).getText() + ' ;'
-        # return self.visitChildren(ctx)
+        return 'pragma ' + self.visitVersionPragma(ctx.getChild(1)) + ';'
 
 
     # Visit a parse tree produced by SolidityParser#VersionPragma.
     def visitVersionPragma(self, ctx:SolidityParser.VersionPragmaContext):
-        return self.visitChildren(ctx)
+        return ctx.getChild(0).getText() + ' ' + self.visitVersion(ctx.getChild(1))
 
 
     # Visit a parse tree produced by SolidityParser#version.
     def visitVersion(self, ctx:SolidityParser.VersionContext):
-        return self.visitChildren(ctx)
+        text = self.visitVersionConstraint(ctx.getChild(0))
+        for i in range(1, ctx.getChildCount()):
+            text += (' ' + self.visitVersionConstraint(ctx.getChild(i)))
+        return text
+        # return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by SolidityParser#versionOperator.
-    def visitVersionOperator(self, ctx:SolidityParser.VersionOperatorContext):
-        return self.visitChildren(ctx)
+    def visitVersionOperator (self, ctx:SolidityParser.VersionOperatorContext):
+        return ctx.getChild(0).getText()
+        # return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by SolidityParser#versionConstraint.
     def visitVersionConstraint(self, ctx:SolidityParser.VersionConstraintContext):
-        return self.visitChildren(ctx)
-
+        if ctx.getChildCount() == 1:
+            return ctx.getChild(0).getText()
+        else:
+            return self.visitVersionOperator(ctx.getChild(0)) + ctx.getChild(1).getText()
 
     # Visit a parse tree produced by SolidityParser#contractDefinition.
     def visitContractDefinition(self, ctx:SolidityParser.ContractDefinitionContext):
