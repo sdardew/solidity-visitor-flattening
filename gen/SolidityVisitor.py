@@ -12,6 +12,11 @@ class SolidityVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by SolidityParser#sourceUnit.
     def visitSourceUnit(self, ctx:SolidityParser.SourceUnitContext):
         text = self.visitPragmaDirective(ctx.getChild(0))
+
+        for i in range(1, ctx.getChildCount() - 1):
+            self.visitContractDefinition(ctx.getChild(i))
+
+        print('******    sourceUnit     *****')
         print(text)
         return self.visitChildren(ctx)
 
