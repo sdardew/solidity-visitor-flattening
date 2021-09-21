@@ -12,9 +12,8 @@ class SolidityVisitor(ParseTreeVisitor):
     # Visit a parse tree produced by SolidityParser#sourceUnit.
     def visitSourceUnit(self, ctx:SolidityParser.SourceUnitContext):
         text = self.visitPragmaDirective(ctx.getChild(0))
-
         for i in range(1, ctx.getChildCount() - 1):
-            self.visitContractDefinition(ctx.getChild(i))
+            text += self.visitContractDefinition(ctx.getChild(i))
 
         print('******    sourceUnit     *****')
         print(text)
@@ -55,12 +54,17 @@ class SolidityVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by SolidityParser#contractDefinition.
     def visitContractDefinition(self, ctx:SolidityParser.ContractDefinitionContext):
-        return self.visitChildren(ctx)
+        text = 'contract ' + self.visitIdentifier(ctx.getChild(1)) + "\n{\n"
+        for i in range(3, ctx.getChildCount()-1):
+            text += self.visitContractPart(ctx.getChild(i))
+        text += "\n}"
+        return text
 
 
     # Visit a parse tree produced by SolidityParser#contractPart.
     def visitContractPart(self, ctx:SolidityParser.ContractPartContext):
-        return self.visitChildren(ctx)
+        return ''
+        # return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by SolidityParser#stateVariableDeclaration.
